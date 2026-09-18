@@ -1,0 +1,22 @@
+{
+  "_source": "Affiche validée (reference/5.webp). Photos = extraits de l'affiche validée, à remplacer par img/p/ via fetch-assets.sh.",
+  "title": "Evolution",
+  "title_accent": "Reaper XS",
+  "subtitle": ["Evolution International", "AEG", "Carbontech"],
+  "badges": [
+    { "icon": "chip", "label": "ETS II" },
+    { "icon": "bbs", "label": "110 billes" },
+    { "icon": "mlok", "label": "M-LOK" }
+  ],
+  "image": "assets/evolution-reaper-xs/cover.png",
+  "background": "",
+  "price": 239.90,
+  "price_old": null,
+  "reference": "EC64AR-ETS",
+  "accessories": [
+    { "name": "Chargeur Reaper 110 billes", "price": 16.90, "reference": "EA0310M", "image": "assets/evolution-reaper-xs/acc1.png" },
+    { "name": "Batterie Li-Po 11.1V 1100 mAh", "price": 29.90, "reference": "EA0143B", "image": "assets/evolution-reaper-xs/acc2.png" },
+    { "name": "Viseur point rouge Micro T1", "price": 45.75, "reference": "VISEUREVO", "image": "assets/evolution-reaper-xs/acc3.png" }
+  ],
+  "mention_18": false
+}

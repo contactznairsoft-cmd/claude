@@ -1,0 +1,22 @@
+{
+  "_source": "Affiche validée (reference/1.webp). Photos = extraits de l'affiche validée, à remplacer par img/p/ via fetch-assets.sh.",
+  "title": "Tokyo Marui",
+  "title_accent": "AKX",
+  "subtitle": ["Tokyo Marui", "GBBR", "Green Gas"],
+  "badges": [
+    { "icon": "crosshair", "label": "Blowback" },
+    { "icon": "bbs", "label": "35 billes" },
+    { "icon": "mlok", "label": "M-LOK" }
+  ],
+  "image": "assets/tokyo-marui-akx/cover.png",
+  "background": "",
+  "price": 699.90,
+  "price_old": null,
+  "reference": "4952839144065",
+  "accessories": [
+    { "name": "Chargeur AKX 35 billes", "price": 64.90, "reference": "4952839149787", "image": "assets/tokyo-marui-akx/acc1.png" },
+    { "name": "Chargeur AKM 35 billes", "price": 59.90, "reference": "4952839149640", "image": "assets/tokyo-marui-akx/acc2.png" },
+    { "name": "Adaptateur HPA AKX / M4", "price": 139.90, "reference": "AITAKX", "image": "assets/tokyo-marui-akx/acc3.png" }
+  ],
+  "mention_18": false
+}

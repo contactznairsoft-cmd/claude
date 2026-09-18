@@ -1,0 +1,22 @@
+{
+  "_source": "Affiche validée (reference/4.webp). Photos = extraits de l'affiche validée, à remplacer par img/p/ via fetch-assets.sh.",
+  "title": "Dracarys",
+  "title_accent": "Gen 12",
+  "subtitle": ["Wolverine × Taran Tactical", "HPA", "John Wick 4"],
+  "badges": [
+    { "icon": "crosshair", "label": "HPA Havoc" },
+    { "icon": "bbs", "label": "8 billes / tir" },
+    { "icon": "mlok", "label": "Keymod" }
+  ],
+  "image": "assets/wolverine-dracarys-gen12/cover.png",
+  "background": "",
+  "price": 1369.00,
+  "price_old": null,
+  "reference": "MTW-GHT-1000-SKU",
+  "accessories": [
+    { "name": "Bouteille HPA T1P 0.8L", "price": 69.90, "sub": "3000 PSI", "image": "assets/wolverine-dracarys-gen12/acc1.png" },
+    { "name": "Régulateur HPA AT200", "price": 89.90, "sub": "0-150 PSI", "image": "assets/wolverine-dracarys-gen12/acc2.png" },
+    { "name": "Ligne HPA 1m raccord US", "price": 25.90, "sub": "Tressée renforcée", "image": "assets/wolverine-dracarys-gen12/acc3.png" }
+  ],
+  "mention_18": false
+}

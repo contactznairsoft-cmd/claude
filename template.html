@@ -1,0 +1,266 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<title>Affiche ZN Airsoft</title>
+<style>
+  @font-face { font-family: "Anton"; src: url("fonts/Anton-Regular.woff2") format("woff2"); font-weight: 400; }
+  @font-face { font-family: "Oswald"; src: url("fonts/Oswald-Variable.woff2") format("woff2"); font-weight: 200 700; }
+
+  :root {
+    --W: 1080px;                /* largeur du canevas, fixée par export.js */
+    --H: 1350px;                /* hauteur du canevas (1350 insta, 1527 A4) */
+    --orange: #ff5a1f;
+    --orange-2: #ff7a2e;
+    --black: #111214;
+    --ink: #17181b;
+    --paper: #f2f2f2;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body { width: var(--W); height: var(--H); overflow: hidden; background: var(--paper); }
+  body { font-family: "Oswald", sans-serif; color: var(--ink); -webkit-font-smoothing: antialiased; }
+
+  /* ---------- Fond ---------- */
+  .bg { position: absolute; inset: 0; z-index: 0; }
+  .bg-image { position: absolute; inset: 0; background-size: cover; background-position: center; }
+  .bg-paper {
+    position: absolute; inset: 0;
+    background:
+      radial-gradient(120% 80% at 50% 35%, rgba(255,255,255,.95) 0%, rgba(240,240,240,.9) 55%, rgba(222,222,224,1) 100%);
+  }
+  .bg-grain { position: absolute; inset: 0; opacity: .35; mix-blend-mode: multiply;
+    background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='260' height='260'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='3' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  0 0 0 .18 0'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>");
+  }
+  .corner { position: absolute; z-index: 1; pointer-events: none; }
+
+  /* ---------- Structure ---------- */
+  .page { position: relative; z-index: 2; width: var(--W); height: var(--H); display: flex; flex-direction: column; align-items: center; }
+
+  .header { margin-top: calc(var(--W) * .045); text-align: center; }
+  .logo { display: inline-flex; align-items: baseline; gap: calc(var(--W) * .012); line-height: 1; }
+  .logo img { height: calc(var(--W) * .085); display: block; }
+  .logo .zn { font-family: "Anton"; font-size: calc(var(--W) * .088); color: var(--orange);
+    background: linear-gradient(180deg, #ff8a3d 0%, var(--orange) 45%, #e8430f 100%); -webkit-background-clip: text; background-clip: text; color: transparent; }
+  .logo .airsoft { font-family: "Oswald"; font-weight: 700; font-size: calc(var(--W) * .07); letter-spacing: .01em; }
+  .tagline { display: flex; align-items: center; gap: calc(var(--W) * .02); justify-content: center; margin-top: calc(var(--W) * .012);
+    font-style: italic; font-weight: 600; font-size: calc(var(--W) * .025); letter-spacing: .06em; text-transform: uppercase; color: var(--ink); }
+  .tagline::before, .tagline::after { content: ""; width: calc(var(--W) * .05); height: 2px; background: var(--orange); }
+
+  .title { margin-top: calc(var(--W) * .022); font-family: "Anton"; text-transform: uppercase; line-height: .92; text-align: center;
+    font-size: calc(var(--W) * var(--title-size, .125)); letter-spacing: .005em; white-space: nowrap; }
+  .title .accent { color: var(--orange); background: linear-gradient(180deg, #ff7d33 0%, var(--orange) 50%, #e23f0c 100%);
+    -webkit-background-clip: text; background-clip: text; color: transparent; }
+
+  .subtitle { margin-top: calc(var(--W) * .014); font-weight: 600; text-transform: uppercase; font-size: calc(var(--W) * .031);
+    letter-spacing: .03em; display: flex; gap: calc(var(--W) * .018); align-items: center; white-space: nowrap; }
+  .subtitle .dot { color: var(--orange); font-size: calc(var(--W) * .03); }
+
+  .badges { margin-top: calc(var(--W) * .022); display: flex; gap: calc(var(--W) * .045); }
+  .badge { display: flex; align-items: center; gap: calc(var(--W) * .014); height: calc(var(--W) * .052); padding: 0 calc(var(--W) * .028);
+    font-weight: 500; text-transform: uppercase; font-size: calc(var(--W) * .022); letter-spacing: .02em; position: relative;
+    background: rgba(255,255,255,.55);
+    clip-path: polygon(6% 0, 100% 0, 100% 62%, 94% 100%, 0 100%, 0 38%);
+  }
+  .badge::before { content: ""; position: absolute; inset: 0; background: var(--orange);
+    clip-path: polygon(6% 0, 100% 0, 100% 62%, 94% 100%, 0 100%, 0 38%); z-index: -1; }
+  .badge::after { content: ""; position: absolute; inset: 2px; background: #f7f7f7;
+    clip-path: polygon(6% 0, 100% 0, 100% 62%, 94% 100%, 0 100%, 0 38%); z-index: -1; }
+  .badge svg { width: calc(var(--W) * .03); height: calc(var(--W) * .03); }
+
+  .hero { flex: 1; width: 100%; display: flex; align-items: center; justify-content: center; min-height: 0; padding: calc(var(--W) * .012) calc(var(--W) * .02); }
+  .hero img { width: 92%; max-height: 100%; object-fit: contain; filter: drop-shadow(0 calc(var(--W) * .02) calc(var(--W) * .025) rgba(0,0,0,.35)); }
+
+  .price-row { display: flex; align-items: center; gap: calc(var(--W) * .05); }
+  .price-row .chev { width: calc(var(--W) * .045); height: calc(var(--W) * .09); }
+  .price { font-family: "Anton"; font-size: calc(var(--W) * .105); line-height: 1; color: var(--orange);
+    background: linear-gradient(180deg, #ff8a3d 0%, var(--orange) 50%, #e23f0c 100%); -webkit-background-clip: text; background-clip: text; color: transparent;
+    display: flex; align-items: baseline; }
+  .price .cents { font-size: .6em; }
+  .price .eur { font-size: .75em; margin-left: .15em; }
+  .price-old { font-family: "Oswald"; font-weight: 600; font-size: calc(var(--W) * .036); color: #666; text-decoration: line-through; margin-right: calc(var(--W) * .02); align-self: center; }
+  .ref { margin-top: calc(var(--W) * .004); font-weight: 400; font-size: calc(var(--W) * .022); letter-spacing: .02em; color: #333; }
+
+  .accessories { margin-top: calc(var(--W) * .018); display: flex; gap: calc(var(--W) * .03); width: calc(var(--W) * .84); }
+  .card { flex: 1; background: #fff; position: relative; border: 1px solid #e3e3e3; box-shadow: 0 calc(var(--W) * .006) calc(var(--W) * .014) rgba(0,0,0,.18);
+    padding: calc(var(--W) * .016) calc(var(--W) * .012) calc(var(--W) * .012); text-align: center; display: flex; flex-direction: column; align-items: center; overflow: hidden; }
+  .card::before, .card::after { content: ""; position: absolute; width: calc(var(--W) * .075); height: calc(var(--W) * .075);
+    background: linear-gradient(135deg, var(--black) 0 26%, transparent 26% 40%, var(--orange) 40% 52%, transparent 52%); }
+  .card::before { top: -1px; left: -1px; }
+  .card::after { bottom: -1px; right: -1px; transform: rotate(180deg); }
+  .card .img { width: 100%; height: calc(var(--W) * .115); display: flex; align-items: center; justify-content: center; }
+  .card .img img { max-width: 92%; max-height: 100%; object-fit: contain; filter: drop-shadow(0 calc(var(--W) * .006) calc(var(--W) * .008) rgba(0,0,0,.3)); }
+  .card .sep { width: 70%; height: 1px; background: #222; margin: calc(var(--W) * .01) 0 calc(var(--W) * .008); }
+  .card .name { font-weight: 700; text-transform: uppercase; font-size: calc(var(--W) * .0175); line-height: 1.15; height: calc(var(--W) * .04); display: flex; align-items: center; }
+  .card .price { font-size: calc(var(--W) * .03); margin-top: calc(var(--W) * .004); }
+  .card .price .cents { font-size: 1em; }
+  .card .price .eur { font-size: 1em; }
+  .card .sub { font-size: calc(var(--W) * .0155); font-weight: 400; color: #333; margin-top: calc(var(--W) * .004); text-transform: uppercase; letter-spacing: .02em; }
+
+  .mention { font-size: calc(var(--W) * .014); color: #555; margin-top: calc(var(--W) * .008); letter-spacing: .03em; text-transform: uppercase; }
+  .mention:empty { display: none; }
+
+  .footer { margin-top: auto; width: 100%; height: calc(var(--W) * .06); background: var(--black); color: #fff; display: flex; align-items: center; justify-content: center;
+    font-weight: 700; text-transform: uppercase; font-size: calc(var(--W) * .034); letter-spacing: .03em; position: relative; overflow: hidden; }
+  .footer .zn { color: var(--orange); margin-left: .3em; }
+  .footer::before, .footer::after { content: ""; position: absolute; top: 0; bottom: 0; width: calc(var(--W) * .18);
+    background: repeating-linear-gradient(115deg, transparent 0 22px, var(--orange) 22px 30px, transparent 30px 52px, #3a3a3a 52px 58px); opacity: .9; }
+  .footer::before { left: 0; }
+  .footer::after { right: 0; transform: scaleX(-1); }
+</style>
+</head>
+<body>
+  <div class="bg">
+    <div class="bg-paper"></div>
+    <div class="bg-image" id="bgImage"></div>
+    <div class="bg-grain"></div>
+  </div>
+
+  <!-- Coins : carbone noir + bande orange (haut gauche / bas droite), traits fins (haut droite / bas gauche) -->
+  <svg class="corner" style="left:0;top:0" width="100%" height="100%" viewBox="0 0 1080 1350" preserveAspectRatio="none" id="cornerSvg">
+    <defs>
+      <pattern id="carbon" width="8" height="8" patternUnits="userSpaceOnUse" patternTransform="rotate(45)">
+        <rect width="8" height="8" fill="#151517"/><rect width="4" height="4" fill="#232326"/><rect x="4" y="4" width="4" height="4" fill="#232326"/>
+      </pattern>
+    </defs>
+    <!-- haut gauche -->
+    <polygon points="0,0 250,0 0,250" fill="url(#carbon)"/>
+    <polygon points="0,265 275,0 305,0 0,300" fill="#ff5a1f"/>
+    <polygon points="0,320 335,0 341,0 0,326" fill="#1b1b1d"/>
+    <polygon points="0,345 360,0 366,0 0,351" fill="#d9d9d9"/>
+    <!-- haut droite : traits gris clairs -->
+    <g fill="#e2e2e2">
+      <polygon points="1080,80 830,330 830,338 1080,88"/>
+      <polygon points="1080,120 900,300 900,308 1080,128"/>
+      <polygon points="1080,0 1040,0 700,340 700,348"/>
+    </g>
+    <!-- bas droite -->
+    <polygon points="1080,1350 830,1350 1080,1100" fill="url(#carbon)"/>
+    <polygon points="1080,1085 805,1350 775,1350 1080,1050" fill="#ff5a1f"/>
+    <polygon points="1080,1030 745,1350 739,1350 1080,1024" fill="#1b1b1d"/>
+    <polygon points="1080,1005 715,1350 709,1350 1080,999" fill="#d9d9d9"/>
+    <!-- bas gauche : traits gris -->
+    <g fill="#e2e2e2">
+      <polygon points="0,1270 250,1020 250,1012 0,1262"/>
+      <polygon points="0,1230 180,1050 180,1042 0,1222"/>
+    </g>
+  </svg>
+
+  <div class="page">
+    <div class="header">
+      <div class="logo" id="logo"><span class="zn">ZN</span><span class="airsoft">AIRSOFT</span></div>
+      <div class="tagline" id="tagline">Moderne. Puissante. Redoutable.</div>
+    </div>
+
+    <div class="title" id="title"></div>
+    <div class="subtitle" id="subtitle"></div>
+    <div class="badges" id="badges"></div>
+
+    <div class="hero"><img id="hero" alt=""></div>
+
+    <div class="price-row">
+      <svg class="chev" viewBox="0 0 50 100"><polyline points="48,4 10,50 48,96" fill="none" stroke="#ff5a1f" stroke-width="3"/></svg>
+      <span class="price-old" id="priceOld"></span>
+      <div class="price" id="price"></div>
+      <svg class="chev" viewBox="0 0 50 100"><polyline points="2,4 40,50 2,96" fill="none" stroke="#ff5a1f" stroke-width="3"/></svg>
+    </div>
+    <div class="ref" id="ref"></div>
+
+    <div class="accessories" id="accessories"></div>
+    <div class="mention" id="mention"></div>
+
+    <div class="footer">Disponible chez <span class="zn">ZN Airsoft</span></div>
+  </div>
+
+<script>
+  const ICONS = {
+    crosshair: '<svg viewBox="0 0 24 24" fill="none" stroke="#111" stroke-width="2"><circle cx="12" cy="12" r="7"/><circle cx="12" cy="12" r="2.5" fill="#111"/><path d="M12 1v5M12 18v5M1 12h5M18 12h5"/></svg>',
+    bbs: '<svg viewBox="0 0 24 24" fill="#111"><circle cx="12" cy="5" r="3"/><circle cx="5" cy="12" r="3"/><circle cx="19" cy="12" r="3"/><circle cx="12" cy="19" r="3"/></svg>',
+    mlok: '<svg viewBox="0 0 24 24" fill="#111"><path d="M2 4h5l5 8 5-8h5v16h-4V11l-6 9-6-9v9H2z"/></svg>',
+    chip: '<svg viewBox="0 0 24 24" fill="none" stroke="#111" stroke-width="2"><rect x="6" y="6" width="12" height="12" rx="1"/><path d="M9 1v5M15 1v5M9 18v5M15 18v5M1 9h5M1 15h5M18 9h5M18 15h5"/><path d="M10 10v4M14 10v4" stroke-width="2.5"/></svg>',
+    battery: '<svg viewBox="0 0 24 24" fill="none" stroke="#111" stroke-width="2"><rect x="2" y="7" width="17" height="10" rx="1.5"/><path d="M19 10h3v4h-3"/><rect x="5" y="10" width="8" height="4" fill="#111" stroke="none"/></svg>',
+    bolt: '<svg viewBox="0 0 24 24" fill="#111"><path d="M13 1 3 14h7l-1 9 11-14h-7z"/></svg>',
+    gas: '<svg viewBox="0 0 24 24" fill="none" stroke="#111" stroke-width="2"><path d="M9 2h6v3H9zM8 5h8v3l1 2v11a1 1 0 0 1-1 1H8a1 1 0 0 1-1-1V10l1-2z"/></svg>',
+    co2: '<svg viewBox="0 0 24 24" fill="none" stroke="#111" stroke-width="2"><path d="M10 2h4v4h-4zM9 6h6v15a1 1 0 0 1-1 1h-4a1 1 0 0 1-1-1z"/></svg>',
+    eye: '<svg viewBox="0 0 24 24" fill="none" stroke="#111" stroke-width="2"><path d="M1 12s4-7 11-7 11 7 11 7-4 7-11 7S1 12 1 12z"/><circle cx="12" cy="12" r="3" fill="#111"/></svg>',
+    shield: '<svg viewBox="0 0 24 24" fill="none" stroke="#111" stroke-width="2"><path d="M12 2 4 5v6c0 5 3.5 9 8 11 4.5-2 8-6 8-11V5z"/></svg>',
+    weight: '<svg viewBox="0 0 24 24" fill="none" stroke="#111" stroke-width="2"><circle cx="12" cy="5" r="2.5"/><path d="M6 9h12l2 12H4z"/></svg>',
+    ruler: '<svg viewBox="0 0 24 24" fill="none" stroke="#111" stroke-width="2"><rect x="2" y="8" width="20" height="8" rx="1"/><path d="M6 8v3M10 8v4M14 8v3M18 8v4"/></svg>',
+    fps: '<svg viewBox="0 0 24 24" fill="none" stroke="#111" stroke-width="2"><path d="M2 12h13M11 8l4 4-4 4"/><circle cx="19" cy="12" r="3" fill="#111"/></svg>',
+    flame: '<svg viewBox="0 0 24 24" fill="#111"><path d="M12 2c1 4 5 6 5 11a5 5 0 0 1-10 0c0-2 1-3 2-4 0 2 1 3 2 3 1-3-1-6 1-10z"/></svg>',
+    bag: '<svg viewBox="0 0 24 24" fill="none" stroke="#111" stroke-width="2"><path d="M4 8h16l-1.5 13h-13z"/><path d="M8 8V6a4 4 0 0 1 8 0v2"/></svg>',
+    star: '<svg viewBox="0 0 24 24" fill="#111"><path d="m12 2 3 7 7 .6-5.3 4.7L18.4 22 12 18l-6.4 4 1.7-7.7L2 9.6 9 9z"/></svg>'
+  };
+
+  function euro(v) {
+    const n = Number(v);
+    const [int, dec] = n.toFixed(2).split('.');
+    const intFmt = int.replace(/\B(?=(\d{3})+(?!\d))/g, ' ');
+    return { int: intFmt, dec };
+  }
+  function priceHtml(v) {
+    const p = euro(v);
+    return `<span class="int">${p.int}</span><span class="cents">,${p.dec}</span><span class="eur">€</span>`;
+  }
+  function esc(s) { return String(s ?? '').replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c])); }
+
+  window.renderPoster = function (d) {
+    document.documentElement.style.setProperty('--W', d._width + 'px');
+    document.documentElement.style.setProperty('--H', d._height + 'px');
+    document.getElementById('cornerSvg').setAttribute('viewBox', `0 0 1080 ${Math.round(1350 * d._height / d._width * 1080 / 1350)}`);
+    // Les coins bas sont définis pour 1350 de haut : on les décale si le canevas est plus haut (A4).
+    const extra = Math.round(d._height * 1080 / d._width) - 1350;
+    if (extra > 0) {
+      const svg = document.getElementById('cornerSvg');
+      svg.setAttribute('viewBox', `0 0 1080 ${1350 + extra}`);
+      const polys = svg.querySelectorAll('polygon');
+      polys.forEach((p, i) => {
+        if (i < 7) return; // 4 haut gauche + 3 haut droite
+        const pts = p.getAttribute('points').split(' ').map(pair => { const [x, y] = pair.split(',').map(Number); return `${x},${y + extra}`; });
+        p.setAttribute('points', pts.join(' '));
+      });
+    }
+
+    if (d.logo) document.getElementById('logo').innerHTML = `<img src="${esc(d.logo)}" alt="ZN Airsoft">`;
+    if (d.tagline) document.getElementById('tagline').textContent = d.tagline;
+
+    const title = document.getElementById('title');
+    title.innerHTML = `${esc(d.title)} <span class="accent">${esc(d.title_accent || '')}</span>`;
+    if (d.title_size) title.style.setProperty('--title-size', d.title_size);
+    // Réduction automatique du titre s'il déborde
+    let size = parseFloat(getComputedStyle(title).getPropertyValue('--title-size')) || .135;
+    while (title.scrollWidth > d._width * .94 && size > .07) { size -= .005; title.style.setProperty('--title-size', size); }
+
+    document.getElementById('subtitle').innerHTML = (d.subtitle || []).map(esc).join('<span class="dot">•</span>');
+    document.getElementById('badges').innerHTML = (d.badges || []).slice(0, 3).map(b =>
+      `<div class="badge">${ICONS[b.icon] || ICONS.star}<span>${esc(b.label)}</span></div>`).join('');
+
+    document.getElementById('hero').src = d.image || '';
+    if (d.background) document.getElementById('bgImage').style.backgroundImage = `url("${d.background}")`;
+
+    document.getElementById('price').innerHTML = priceHtml(d.price);
+    document.getElementById('priceOld').innerHTML = d.price_old ? priceHtml(d.price_old) : '';
+    document.getElementById('ref').textContent = d.reference ? `Réf. ${d.reference}` : '';
+
+    document.getElementById('accessories').innerHTML = (d.accessories || []).slice(0, 3).map(a => `
+      <div class="card">
+        <div class="img"><img src="${esc(a.image || '')}" alt=""></div>
+        <div class="sep"></div>
+        <div class="name">${esc(a.name)}</div>
+        <div class="price">${priceHtml(a.price)}</div>
+        <div class="sub">${a.reference ? 'Réf. ' + esc(a.reference) : esc(a.sub || '')}</div>
+      </div>`).join('');
+
+    document.getElementById('mention').textContent = d.mention_18 ? 'Vente interdite aux moins de 18 ans' : '';
+  };
+
+  // Aperçu direct dans un navigateur : template.html?data=data/<slug>.json
+  const params = new URLSearchParams(location.search);
+  if (params.get('data')) {
+    fetch(params.get('data')).then(r => r.json()).then(d => {
+      d._width = Number(params.get('w') || 1080); d._height = Number(params.get('h') || 1350);
+      renderPoster(d);
+    });
+  }
+</script>
+</body>
+</html>
